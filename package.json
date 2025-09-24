@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@react-three/drei": "^10.7.6",
+    "@react-three/fiber": "^9.3.0",
+    "axios": "^1.12.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.3",
+    "react-dropzone": "^14.3.8",
+    "react-router-dom": "^7.9.2",
+    "recharts": "^3.2.1",
+    "three": "^0.180.0"
+  }
+}
