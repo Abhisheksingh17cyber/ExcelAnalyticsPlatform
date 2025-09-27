@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Analytics - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-login {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-register {
+            background: transparent;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            margin-top: 80px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007bff;
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #0056b3;
+        }
+
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .demo-credentials {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .demo-item {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .demo-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .demo-value {
+            color: #007bff;
+            font-family: monospace;
+            cursor: pointer;
+            padding: 2px 4px;
+            background: rgba(0, 123, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .demo-value:hover {
+            background: rgba(0, 123, 255, 0.2);
+        }
+
+        .auth-message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .auth-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px 10px;
+                margin-top: 100px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .logo-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="logo">
+            <span class="logo-icon">📊</span>
+            <span class="logo-text">Excel Analytics</span>
+        </a>
+        <div class="header-buttons">
+            <a href="#" class="btn-login">Login</a>
+            <a href="#" class="btn-register" onclick="showComingSoon()">Register</a>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <h1 class="login-title">Sign in to your account</h1>
+            <p class="login-subtitle">Access your Excel Analytics Dashboard</p>
+        </div>
+
+        <div id="authMessage" style="display: none;"></div>
+
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="Enter your email"
+                    required
+                    value="admin@demo.com"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Enter your password"
+                    required
+                    value="admin123"
+                >
+            </div>
+
+            <button type="submit" class="login-btn" id="loginButton">
+                Sign In
+            </button>
+        </form>
+
+        <div class="signup-link">
+            Don't have an account? <a href="#" onclick="showComingSoon()">Sign up here</a>
+        </div>
+
+        <div class="demo-credentials">
+            <div class="demo-title">Demo Credentials:</div>
+            <div class="demo-item">
+                <span class="demo-label">Admin:</span> 
+                <span class="demo-value" onclick="fillCredentials('admin@demo.com', 'admin123')">admin@demo.com</span> / 
+                <span class="demo-value" onclick="fillCredentials('admin@demo.com', 'admin123')">admin123</span>
+            </div>
+            <div class="demo-item">
+                <span class="demo-label">User:</span> 
+                <span class="demo-value" onclick="fillCredentials('user@demo.com', 'user123')">user@demo.com</span> / 
+                <span class="demo-value" onclick="fillCredentials('user@demo.com', 'user123')">user123</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AuthSystem {
+            constructor() {
+                this.users = {
+                    'admin@demo.com': {
+                        password: 'admin123',
+                        role: 'admin',
+                        name: 'Admin User'
+                    },
+                    'user@demo.com': {
+                        password: 'user123',
+                        role: 'user',
+                        name: 'Demo User'
+                    }
+                };
+                
+                this.currentUser = null;
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+                }
+
+                // Check for existing session
+                this.checkExistingSession();
+            }
+
+            async handleLogin(event) {
+                event.preventDefault();
+                
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
+                const loginButton = document.getElementById('loginButton');
+
+                if (!emailInput || !passwordInput) {
+                    this.showError('Login form inputs not found');
+                    return;
+                }
+
+                const email = emailInput.value.trim().toLowerCase();
+                const password = passwordInput.value;
+
+                // Show loading state
+                loginButton.textContent = 'Signing In...';
+                loginButton.disabled = true;
+                document.querySelector('.login-container').classList.add('loading');
+
+                // Simulate network delay for better UX
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                if (this.validateCredentials(email, password)) {
+                    this.loginSuccess(email);
+                } else {
+                    this.showError('Invalid email or password. Please use the demo credentials provided.');
+                    loginButton.textContent = 'Sign In';
+                    loginButton.disabled = false;
+                    document.querySelector('.login-container').classList.remove('loading');
+                }
+            }
+
+            validateCredentials(email, password) {
+                const user = this.users[email];
+                return user && user.password === password;
+            }
+
+            loginSuccess(email) {
+                const user = this.users[email];
+                this.currentUser = {
+                    email: email,
+                    role: user.role,
+                    name: user.name
+                };
+
+                // Store in session for persistence
+                sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+
+                this.showSuccess(`Welcome ${user.name}! Redirecting to React app...`);
+
+                // Redirect to React app after a short delay
+                setTimeout(() => {
+                    window.location.href = 'http://localhost:3000';
+                }, 2000);
+            }
+
+            showSuccess(message) {
+                this.showMessage(message, 'success');
+            }
+
+            showError(message) {
+                this.showMessage(message, 'error');
+            }
+
+            showMessage(message, type) {
+                const messageEl = document.getElementById('authMessage');
+                messageEl.style.display = 'block';
+                messageEl.className = `auth-message ${type}`;
+                messageEl.innerHTML = `
+                    <span>${type === 'success' ? '✅' : '❌'}</span>
+                    ${message}
+                `;
+            }
+
+            checkExistingSession() {
+                const currentUser = sessionStorage.getItem('currentUser');
+                if (currentUser) {
+                    // User already logged in, redirect to React app
+                    window.location.href = 'http://localhost:3000';
+                }
+            }
+
+            logout() {
+                sessionStorage.removeItem('currentUser');
+                this.currentUser = null;
+                window.location.reload();
+            }
+        }
+
+        // Global functions for demo
+        function fillCredentials(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+        }
+
+        function showComingSoon() {
+            document.getElementById('authMessage').style.display = 'block';
+            document.getElementById('authMessage').className = 'auth-message';
+            document.getElementById('authMessage').innerHTML = `
+                <span>ℹ️</span>
+                Registration feature coming soon! Please use the demo credentials for now.
+            `;
+        }
+
+        // Initialize auth system
+        const authSystem = new AuthSystem();
+    </script>
+</body>
+</html>
