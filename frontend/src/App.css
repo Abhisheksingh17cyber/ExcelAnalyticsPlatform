@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,12 +15,12 @@
   * {
     @apply border-gray-200;
   }
-  
+
   body {
     @apply bg-gray-50 font-sans;
     font-feature-settings: "cv03", "cv04", "cv11";
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
@@ -30,43 +30,43 @@
   .btn {
     @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
   }
-  
+
   .btn-primary {
     @apply bg-primary-600 text-white hover:bg-primary-700 px-4 py-2;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-200 text-gray-900 hover:bg-gray-300 px-4 py-2;
   }
-  
+
   .btn-danger {
     @apply bg-red-600 text-white hover:bg-red-700 px-4 py-2;
   }
-  
+
   .card {
     @apply bg-white rounded-lg shadow-lg border border-gray-200 p-6;
   }
-  
+
   .input-field {
     @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500;
   }
-  
+
   .gradient-text {
     @apply bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent;
   }
-  
+
   .loading-spinner {
     @apply inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite];
   }
-  
+
   .chart-container {
     @apply bg-white rounded-lg shadow-lg p-4 border border-gray-200;
   }
-  
+
   .sidebar-item {
     @apply flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-primary-600 rounded-md transition-colors duration-150;
   }
-  
+
   .sidebar-item.active {
     @apply bg-primary-50 text-primary-600 border-r-2 border-primary-600;
   }
@@ -76,20 +76,20 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   .glass {
     @apply bg-white/20 backdrop-blur-lg border border-white/30;
   }
-  
+
   .transition-base {
     @apply transition-all duration-300 ease-in-out;
   }
@@ -115,7 +115,8 @@
 
 /* Loading animations */
 @keyframes pulse-soft {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
