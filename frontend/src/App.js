@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import StandaloneLogin from './components/StandaloneLogin';
+import SimpleLogin from './components/SimpleLogin';
+import SimpleDashboard from './components/SimpleDashboard';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import FileUpload from './pages/FileUpload';
@@ -62,6 +64,12 @@ function App() {
                 <PublicRoute>
                   <StandaloneLogin />
                 </PublicRoute>
+              } />
+              <Route path="/simple-login" element={
+                <SimpleLogin />
+              } />
+              <Route path="/simple-dashboard" element={
+                <SimpleDashboard />
               } />
               <Route path="/register" element={
                 <PublicRoute>

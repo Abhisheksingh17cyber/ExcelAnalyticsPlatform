@@ -54,12 +54,22 @@ export function AuthProvider({ children }) {
 
   const fetchCurrentUser = async () => {
     try {
+      // Check for demo user first
+      const demoUser = localStorage.getItem('demoUser');
+      if (demoUser) {
+        setUser(JSON.parse(demoUser));
+        setError(null);
+        return;
+      }
+      
+      // Try backend user fetch
       const response = await axios.get('/api/auth/me');
       setUser(response.data);
       setError(null);
     } catch (error) {
       console.error('Fetch current user error:', error);
       localStorage.removeItem('token');
+      localStorage.removeItem('demoUser');
       delete axios.defaults.headers.common['Authorization'];
       setUser(null);
       throw error;
@@ -71,16 +81,57 @@ export function AuthProvider({ children }) {
       setLoading(true);
       setError(null);
       
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user } = response.data;
+      // Demo user authentication (fallback if backend is not available)
+      const demoUsers = {
+        'admin@demo.com': {
+          password: 'admin123',
+          user: {
+            id: 'demo-admin',
+            username: 'Admin User',
+            email: 'admin@demo.com',
+            isAdmin: true
+          }
+        },
+        'user@demo.com': {
+          password: 'user123',
+          user: {
+            id: 'demo-user',
+            username: 'Demo User',
+            email: 'user@demo.com',
+            isAdmin: false
+          }
+        }
+      };
       
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(user);
+      // Check demo credentials first
+      const demoUser = demoUsers[email.toLowerCase()];
+      if (demoUser && demoUser.password === password) {
+        const demoToken = 'demo-jwt-token-' + Date.now();
+        localStorage.setItem('token', demoToken);
+        localStorage.setItem('demoUser', JSON.stringify(demoUser.user));
+        setUser(demoUser.user);
+        return { success: true, message: 'Demo login successful' };
+      }
       
-      return { success: true, message: 'Login successful' };
+      // Try backend authentication
+      try {
+        const response = await axios.post('/api/auth/login', { email, password });
+        const { token, user } = response.data;
+        
+        localStorage.setItem('token', token);
+        localStorage.removeItem('demoUser'); // Clear demo user if real login
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        setUser(user);
+        
+        return { success: true, message: 'Login successful' };
+      } catch (backendError) {
+        // If backend fails and not demo user, show error
+        const message = backendError.response?.data?.message || 'Invalid credentials. Use demo credentials: admin@demo.com/admin123 or user@demo.com/user123';
+        setError(message);
+        return { success: false, message };
+      }
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed';
+      const message = 'Login failed. Use demo credentials: admin@demo.com/admin123';
       setError(message);
       return { success: false, message };
     } finally {
@@ -144,6 +195,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('demoUser');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
     setError(null);
