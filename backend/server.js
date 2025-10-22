@@ -14,10 +14,31 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'your-frontend-domain.com' : 'http://localhost:3000',
+
+// CORS configuration for local network access
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // In development, allow localhost and local network IPs
+    if (process.env.NODE_ENV !== 'production') {
+      // Allow localhost in various forms and any IP in local network ranges
+      if (origin.match(/^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3})(:\d+)?$/)) {
+        return callback(null, true);
+      }
+    } else {
+      // In production, use configured domain
+      if (origin === 'your-frontend-domain.com') {
+        return callback(null, true);
+      }
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -59,6 +80,24 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const HOST = '0.0.0.0'; // Listen on all network interfaces
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
+  console.log(`Access from this machine: http://localhost:${PORT}`);
+  
+  // Try to display local network IP
+  const os = require('os');
+  const networkInterfaces = os.networkInterfaces();
+  console.log('\nAccess from other devices on your network:');
+  
+  Object.keys(networkInterfaces).forEach((interfaceName) => {
+    networkInterfaces[interfaceName].forEach((iface) => {
+      // Skip internal and non-IPv4 addresses
+      if (iface.family === 'IPv4' && !iface.internal) {
+        console.log(`  http://${iface.address}:${PORT}`);
+      }
+    });
+  });
+  console.log('');
 });
