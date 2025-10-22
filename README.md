@@ -69,13 +69,41 @@ npm install
 
 ### 4. Start the Application
 
-**Option 1: Run Both Servers Simultaneously**
+**Option 1: Run on Local Network (Accessible from other devices)**
+
+To make the application accessible from other devices on your local network:
+
+Windows:
+```bash
+start-network-access.bat
+```
+
+Linux/Mac:
+```bash
+./start-network-access.sh
+```
+
+The script will:
+- Automatically detect your local IP address
+- Configure both servers to accept connections from the network
+- Display the URLs to access the application from any device
+
+Example access URLs:
+- Frontend: `http://192.168.1.100:3000` (your IP will be different)
+- Login page: `http://192.168.1.100:3000/simple-login`
+- Backend API: `http://192.168.1.100:5000`
+
+**Note**: Make sure your firewall allows connections on ports 3000 and 5000.
+
+**Option 2: Run Locally (localhost only)**
+
+**Option 2a: Run Both Servers Simultaneously**
 ```bash
 cd backend
 npm run dev:full
 ```
 
-**Option 2: Run Servers Separately**
+**Option 2b: Run Servers Separately**
 
 Terminal 1 (Backend):
 ```bash
@@ -92,6 +120,31 @@ npm start
 The application will be available at:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5000
+
+## 🌐 Network Access
+
+To access the application from other devices on your local network (e.g., from your phone or another computer):
+
+1. **Run the network access script**:
+   - Windows: Double-click `start-network-access.bat` or run it from command prompt
+   - Linux/Mac: Run `./start-network-access.sh` from terminal
+
+2. **Configure your firewall**:
+   - Ensure ports 3000 and 5000 are allowed through your firewall
+   - Windows Firewall: Add inbound rules for ports 3000 and 5000
+   - Linux: Use `ufw allow 3000` and `ufw allow 5000`
+   - Mac: System Preferences > Security & Privacy > Firewall > Firewall Options
+
+3. **Access from other devices**:
+   - The script will display your local IP address
+   - Use that IP to access the app: `http://YOUR_IP:3000`
+   - Example: `http://192.168.1.100:3000/simple-login`
+
+**Troubleshooting Network Access**:
+- Make sure all devices are on the same network
+- Check that MongoDB is accessible (it runs locally on the server machine)
+- Verify firewall settings on the host machine
+- Try disabling VPN if connection issues occur
 
 ## 📁 Project Structure
 
