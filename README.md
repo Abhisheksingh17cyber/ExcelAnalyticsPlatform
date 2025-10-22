@@ -89,9 +89,59 @@ cd frontend
 npm start
 ```
 
+**Option 3: Network Access for Other Devices (Windows)**
+
+To make the application accessible from other devices on your local network:
+```bash
+# Run the share-app.bat script from the project root
+share-app.bat
+```
+
+This script will:
+- Automatically detect your local IP address
+- Start both frontend and backend servers
+- Display URLs for accessing the app from other devices
+
 The application will be available at:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+- Frontend: http://localhost:3000 (on the host machine)
+- Backend API: http://localhost:5000 (on the host machine)
+
+**Accessing from Other Devices on Your Network:**
+- Frontend: http://YOUR_LOCAL_IP:3000
+- Backend API: http://YOUR_LOCAL_IP:5000
+
+**Important Notes for Network Access:**
+- Ensure all devices are on the same Wi-Fi/network
+- Configure your firewall to allow connections on ports 3000 and 5000
+- The local IP address is typically in the format 192.168.x.x or 10.x.x.x
+
+**Manual Network Access Setup:**
+
+For Linux/Mac users, you can achieve network access by:
+
+1. Starting the backend to listen on all interfaces (already configured in server.js)
+2. Starting the frontend with HOST environment variable:
+```bash
+# Terminal 1 - Backend
+cd backend
+npm start
+
+# Terminal 2 - Frontend  
+cd frontend
+HOST=0.0.0.0 npm start
+```
+
+3. Find your local IP address:
+```bash
+# On Linux/Mac
+ip addr show | grep "inet " | grep -v 127.0.0.1
+
+# On Mac specifically
+ifconfig | grep "inet " | grep -v 127.0.0.1
+
+# On Windows
+ipconfig | findstr IPv4
+```
 
 ## 📁 Project Structure
 
@@ -204,6 +254,43 @@ npm run build
 - File type validation for uploads
 - JWT token expiration
 - Password hashing with bcrypt
+
+## 🌐 Network Access & Troubleshooting
+
+### Firewall Configuration
+
+When accessing the application from other devices, you may need to configure your firewall:
+
+**Windows Firewall:**
+1. Open Windows Defender Firewall
+2. Click "Allow an app through firewall"
+3. Add rules for Node.js to allow ports 3000 and 5000
+
+**Linux (ufw):**
+```bash
+sudo ufw allow 3000/tcp
+sudo ufw allow 5000/tcp
+```
+
+**Mac:**
+System Preferences → Security & Privacy → Firewall → Firewall Options → Allow incoming connections for Node
+
+### Common Issues
+
+**Cannot connect from other device:**
+- Verify all devices are on the same network
+- Check firewall settings
+- Ensure backend CORS is properly configured (already set up for local network access)
+- Try accessing http://YOUR_IP:3000 directly in browser
+
+**CORS Errors:**
+- The backend is configured to allow requests from local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+- If you still encounter CORS errors, verify the frontend is making requests to the correct backend URL
+
+**Backend not accessible:**
+- Ensure MongoDB is running
+- Check that the backend server started successfully
+- Verify port 5000 is not in use by another application
 
 ## 🤝 Contributing
 
