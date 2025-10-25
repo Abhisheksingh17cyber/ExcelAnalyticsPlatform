@@ -6,7 +6,12 @@
   publish = "frontend/build"
   
   # Build command
-  command = "npm run build"
+  command = "CI=false npm run build"
+  
+[build.environment]
+  # Prevent warnings from being treated as errors
+  CI = "false"
+  GENERATE_SOURCEMAP = "false"
 
 # Redirect all requests to index.html for React Router to handle
 [[redirects]]

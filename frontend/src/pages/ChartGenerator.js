@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, ScatterChart, Scatter, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Box, Text } from '@react-three/drei';
+import { OrbitControls, Box } from '@react-three/drei';
 import LoadingSpinner from '../components/LoadingSpinner';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
@@ -26,44 +26,64 @@ const ChartGenerator = () => {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
-  const [createdChart, setCreatedChart] = useState(null);
 
-  useEffect(() => {
-    fetchFileData();
-  }, [fileId]);
-
-  useEffect(() => {
-    if (chartConfig.xAxis && chartConfig.yAxis && fileData) {
-      generateChartData();
-    }
-  }, [chartConfig.xAxis, chartConfig.yAxis, chartConfig.type, fileData]);
-
-  const fetchFileData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`/api/files/${fileId}/data`);
-      setFileData(response.data);
+  const processXYData = useCallback(() => {
+    if (!fileData) return [];
+    
+    const grouped = {};
+    
+    fileData.data.forEach(row => {
+      const xValue = row[chartConfig.xAxis];
+      const yValue = parseFloat(row[chartConfig.yAxis]);
       
-      // Set default values
-      if (response.data.fileInfo.headers.length > 0) {
-        setChartConfig(prev => ({
-          ...prev,
-          xAxis: response.data.fileInfo.headers[0],
-          yAxis: response.data.fileInfo.headers.length > 1 ? response.data.fileInfo.headers[1] : ''
-        }));
+      if (xValue !== null && xValue !== undefined && !isNaN(yValue)) {
+        if (grouped[xValue]) {
+          grouped[xValue] += yValue;
+        } else {
+          grouped[xValue] = yValue;
+        }
       }
-    } catch (error) {
-      console.error('Error fetching file data:', error);
-      setError('Failed to load file data');
-      if (error.response?.status === 404) {
-        navigate('/upload');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    });
 
-  const generateChartData = () => {
+    return Object.entries(grouped)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 20);
+  }, [fileData, chartConfig.xAxis, chartConfig.yAxis]);
+
+  const processPieData = useCallback(() => {
+    if (!fileData) return [];
+    
+    const grouped = {};
+    
+    fileData.data.forEach(row => {
+      const category = row[chartConfig.xAxis];
+      const value = parseFloat(row[chartConfig.yAxis]) || 1;
+      
+      if (category !== null && category !== undefined) {
+        grouped[category] = (grouped[category] || 0) + value;
+      }
+    });
+
+    return Object.entries(grouped)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 10);
+  }, [fileData, chartConfig.xAxis, chartConfig.yAxis]);
+
+  const processScatterData = useCallback(() => {
+    if (!fileData) return [];
+    
+    return fileData.data
+      .map(row => ({
+        x: parseFloat(row[chartConfig.xAxis]) || 0,
+        y: parseFloat(row[chartConfig.yAxis]) || 0
+      }))
+      .filter(item => !isNaN(item.x) && !isNaN(item.y))
+      .slice(0, 100);
+  }, [fileData, chartConfig.xAxis, chartConfig.yAxis]);
+
+  const generateChartData = useCallback(() => {
     if (!fileData || !chartConfig.xAxis || !chartConfig.yAxis) return;
 
     try {
@@ -86,57 +106,44 @@ const ChartGenerator = () => {
       console.error('Error processing chart data:', error);
       setError('Failed to process chart data');
     }
-  };
+  }, [fileData, chartConfig.xAxis, chartConfig.yAxis, chartConfig.type, processPieData, processScatterData, processXYData]);
 
-  const processXYData = () => {
-    const grouped = {};
-    
-    fileData.data.forEach(row => {
-      const xValue = row[chartConfig.xAxis];
-      const yValue = parseFloat(row[chartConfig.yAxis]);
+  const fetchFileData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/files/${fileId}/data`);
+      setFileData(response.data);
       
-      if (xValue !== null && xValue !== undefined && !isNaN(yValue)) {
-        if (grouped[xValue]) {
-          grouped[xValue] += yValue;
-        } else {
-          grouped[xValue] = yValue;
-        }
+      // Set default values
+      if (response.data.fileInfo.headers.length > 0) {
+        setChartConfig(prev => ({
+          ...prev,
+          xAxis: response.data.fileInfo.headers[0],
+          yAxis: response.data.fileInfo.headers.length > 1 ? response.data.fileInfo.headers[1] : ''
+        }));
       }
-    });
-
-    return Object.entries(grouped)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 20); // Limit to top 20 items
-  };
-
-  const processPieData = () => {
-    const grouped = {};
-    
-    fileData.data.forEach(row => {
-      const category = row[chartConfig.xAxis];
-      const value = parseFloat(row[chartConfig.yAxis]) || 1;
-      
-      if (category !== null && category !== undefined) {
-        grouped[category] = (grouped[category] || 0) + value;
+    } catch (error) {
+      console.error('Error fetching file data:', error);
+      setError('Failed to load file data');
+      if (error.response?.status === 404) {
+        navigate('/upload');
       }
-    });
+    } finally {
+      setLoading(false);
+    }
+  }, [fileId, navigate]);
 
-    return Object.entries(grouped)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 10); // Limit to top 10 for readability
-  };
+  useEffect(() => {
+    fetchFileData();
+  }, [fetchFileData]);
 
-  const processScatterData = () => {
-    return fileData.data
-      .map(row => ({
-        x: parseFloat(row[chartConfig.xAxis]) || 0,
-        y: parseFloat(row[chartConfig.yAxis]) || 0
-      }))
-      .filter(item => !isNaN(item.x) && !isNaN(item.y))
-      .slice(0, 100); // Limit points for performance
-  };
+  useEffect(() => {
+    if (chartConfig.xAxis && chartConfig.yAxis && fileData) {
+      generateChartData();
+    }
+  }, [chartConfig.xAxis, chartConfig.yAxis, chartConfig.type, fileData, generateChartData]);
+
+
 
   const handleConfigChange = (field, value) => {
     setChartConfig(prev => ({
@@ -149,7 +156,7 @@ const ChartGenerator = () => {
     try {
       setGenerating(true);
       
-      const response = await axios.post('/api/charts/create', {
+      await axios.post('/api/charts/create', {
         fileId,
         chartType: chartConfig.type,
         xAxis: chartConfig.xAxis,
@@ -161,7 +168,6 @@ const ChartGenerator = () => {
         }
       });
 
-      setCreatedChart(response.data);
       alert('Chart saved successfully!');
     } catch (error) {
       console.error('Error saving chart:', error);
