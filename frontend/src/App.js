@@ -50,7 +50,7 @@ function PublicRoute({ children }) {
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/ExcelAnalyticsPlatform">
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <main className="container mx-auto px-4 py-8">
