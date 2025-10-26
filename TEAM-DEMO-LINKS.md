@@ -2,14 +2,19 @@
 
 ## 📱 ACCESS LINKS
 
-### **NETWORK ACCESS (Share this with your team!):**
+### **🌐 NETWORK ACCESS (Share this with your team!):**
 ```
-http://192.168.29.230:3000/simple-login
+http://192.168.29.230:8080
 ```
 
-### **LOCAL ACCESS:**
+### **🔑 DIRECT LOGIN LINK:**
 ```
-http://localhost:3000/simple-login
+http://192.168.29.230:8080/simple-login
+```
+
+### **🏠 LOCAL ACCESS:**
+```
+http://localhost:8080
 ```
 
 ## 🔐 LOGIN CREDENTIALS
@@ -84,7 +89,7 @@ The platform is fully responsive and works on:
 ### **For Team Members:**
 1. **Connect to WiFi:** Same network as the host computer
 2. **Open Browser:** Any modern browser
-3. **Visit:** `http://192.168.29.230:3000/simple-login`
+3. **Visit:** `http://192.168.29.230:8080/simple-login`
 4. **Login:** Use provided credentials
 5. **Explore:** Try file upload, dashboard, and chart generation
 
@@ -113,9 +118,10 @@ The platform is fully responsive and works on:
 
 ## 📞 SUPPORT
 
-**Server Status:** ✅ Running on Port 3000  
+**Server Status:** ✅ Running on Port 8080  
 **Network IP:** `192.168.29.230`  
-**Last Updated:** October 25, 2025
+**Last Updated:** October 26, 2025  
+**Status:** ✅ WORKING - VERIFIED
 
 ---
 

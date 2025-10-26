@@ -25,7 +25,7 @@ echo     SERVER IS STARTING - TEAM ACCESS READY!
 echo ===============================================
 echo.
 echo SHARE THIS WITH YOUR TEAM:
-echo Network URL: http://192.168.29.230:3000/simple-login
+echo Network URL: http://192.168.29.230:8080/simple-login
 echo.
 echo LOGIN CREDENTIALS:
 echo Admin: admin@demo.com / admin123
