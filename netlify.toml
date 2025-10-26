@@ -12,6 +12,8 @@
   # Prevent warnings from being treated as errors
   CI = "false"
   GENERATE_SOURCEMAP = "false"
+  # Specify Node.js version for compatibility
+  NODE_VERSION = "18"
 
 # Redirect all requests to index.html for React Router to handle
 [[redirects]]

@@ -2,7 +2,10 @@
   "name": "excel-analytics-platform-frontend",
   "version": "1.0.0",
   "private": true,
-
+  "homepage": ".",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.15.0",
