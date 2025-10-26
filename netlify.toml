@@ -2,8 +2,8 @@
   # Directory with the build files
   base = "frontend"
   
-  # Directory that contains the deploy-ready HTML files and assets
-  publish = "frontend/build"
+  # Directory that contains the deploy-ready HTML files and assets (relative to base)
+  publish = "build"
   
   # Build command
   command = "CI=false npm run build"
